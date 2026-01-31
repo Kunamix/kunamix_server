@@ -134,7 +134,7 @@ export const contactForm = async (req: Request, res: Response, next: NextFunctio
         </p>
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
         <p style="font-size: 14px; color: #777;">
-          📞 +91-7004689636<br>
+          📞 +91-7050553648<br>
           🌐 <a href="https://kunamix.com" style="color: #007bff;">kunamix.com</a><br>
           📧 <a href="mailto:contact@kunamix.com" style="color: #007bff;">contact@kunamix.com</a>
         </p>
@@ -404,7 +404,7 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
         
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
         <p style="font-size: 14px; color: #777;">
-          📞 +91-7004689636<br>
+          📞 +91-7050553648<br>
           🌐 <a href="https://kunamix.com" style="color: #007bff;">kunamix.com</a><br>
           📧 <a href="mailto:contact@kunamix.com" style="color: #007bff;">contact@kunamix.com</a>
         </p>
@@ -456,7 +456,7 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
         <ul style="color: #555;">
           <li>Check out our portfolio at <a href="https://kunamix.com" style="color: #007bff;">kunamix.com</a></li>
           <li>Email us directly at <a href="mailto:contact@kunamix.com" style="color: #007bff;">contact@kunamix.com</a></li>
-          <li>Call us at +91-7004689636</li>
+          <li>Call us at +91-7050553648</li>
         </ul>
 
         <p style="margin-top: 30px; font-size: 16px; color: #333;">
