@@ -1,9 +1,9 @@
-import express from 'express';
-import { kunamixMailSender } from '../controllers/mail.controller';
+import express from "express";
+import { contactForm, referForm } from "../controllers/mail.controller";
 
-const mailRouter = express.Router();
+const router = express.Router();
 
-mailRouter.post('/kunamix/mail-sender', kunamixMailSender);
+router.post("/contact-form", contactForm);
+router.post("/refer-form", referForm);
 
-
-export default mailRouter;
+export default router;
