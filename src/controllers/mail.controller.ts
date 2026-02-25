@@ -98,20 +98,20 @@ export const contactForm = async (req: Request, res: Response, next: NextFunctio
     });
 
     if (error) {
-      return next(new ErrorHandler("Failed to send email to Kunamix", 500));
+      return next(new ErrorHandler("Failed to send email to Kunamix Digital Solutions", 500));
     }
 
     // Send thank-you email to user
     await resend.emails.send({
       from: "no-reply@kunamix.com",
       to: [email],
-      subject: `Thanks for contacting Kunamix!`,
+      subject: `Thanks for contacting Kunamix Digital Solutions!`,
       html: `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Thank You for Contacting Kunamix</title>
+  <title>Thank You for Contacting Kunamix Digital Solutions</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 20px;">
   <table style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
@@ -119,7 +119,7 @@ export const contactForm = async (req: Request, res: Response, next: NextFunctio
       <td>
         <h2 style="color: #1a1a1a;">Hi ${name},</h2>
         <p style="font-size: 16px; color: #333;">
-          Thank you for reaching out to <strong>Kunamix</strong>. We've received your message and will get back to you shortly.
+          Thank you for reaching out to <strong>Kunamix Digital Solutions</strong>. We've received your message and will get back to you shortly.
         </p>
         <h4 style="margin-top: 30px; color: #555;">Your Message:</h4>
         <blockquote style="font-size: 15px; color: #444; margin: 10px 0; padding: 10px 15px; background-color: #f2f2f2; border-left: 4px solid #007bff;">
@@ -130,7 +130,7 @@ export const contactForm = async (req: Request, res: Response, next: NextFunctio
         </p>
         <p style="margin-top: 30px; font-size: 16px; color: #333;">
           Best regards,<br>
-          Kunamix Team
+          Kunamix Digital Solutions Team
         </p>
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
         <p style="font-size: 14px; color: #777;">
@@ -371,7 +371,7 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
       <td>
         <h2 style="color: #1a1a1a;">Hi ${yourName},</h2>
         <p style="font-size: 16px; color: #333;">
-          Thank you for referring <strong>${clientName}</strong> to <strong>Kunamix</strong>! 🎉
+          Thank you for referring <strong>${clientName}</strong> to <strong>Kunamix Digital Solutions</strong>! 🎉
         </p>
         <p style="font-size: 16px; color: #333;">
           We've received your referral and will reach out to them shortly to discuss their project needs.
@@ -399,7 +399,7 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
 
         <p style="margin-top: 30px; font-size: 16px; color: #333;">
           Best regards,<br>
-          Kunamix Team
+          Kunamix Digital Solutions Team
         </p>
         
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
@@ -437,11 +437,11 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
           <strong>${yourName}</strong> thought we'd be a great fit for your project needs! 
         </p>
         <p style="font-size: 16px; color: #333;">
-          At <strong>Kunamix</strong>, we specialize in creating exceptional digital solutions that help businesses grow and succeed.
+          At <strong>Kunamix Digital Solutions</strong>, we specialize in creating exceptional digital solutions that help businesses grow and succeed.
         </p>
 
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 8px; margin: 20px 0; color: white;">
-          <h3 style="margin-top: 0; color: white;">Why Choose Kunamix?</h3>
+          <h3 style="margin-top: 0; color: white;">Why Choose Kunamix Digital Solutions?</h3>
           <ul style="padding-left: 20px; margin: 10px 0;">
             <li style="margin: 8px 0;">Expert team of developers & designers</li>
             <li style="margin: 8px 0;">50+ successful projects delivered</li>
@@ -462,7 +462,7 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
         <p style="margin-top: 30px; font-size: 16px; color: #333;">
           Looking forward to working with you!<br><br>
           Best regards,<br>
-          Kunamix Team
+          Kunamix Digital Solutions Team
         </p>
         
         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
