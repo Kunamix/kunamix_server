@@ -5,91 +5,141 @@ import { Resend } from "resend";
 dotenv.config();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const contactForm = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, name, message, subject, company } = req.body;
+export const contactForm = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // 1. Update destructured fields to match your new frontend payload
+  const { name, email, message, projectType, budget } = req.body;
 
-  if (!email || !name || !message || !subject) {
+  // 2. Update validation to check for the new required fields
+  if (!name || !email || !message || !projectType || !budget) {
     return next(new ErrorHandler("Missing required fields", 400));
   }
 
   try {
+    // 3. Dynamic subject for the internal Kunamix team notification
+    const internalSubject = `🚀 New Lead: ${projectType} from ${name}`;
+
     // Send to Kunamix internal team
     const { data, error } = await resend.emails.send({
-      from: "contact@kunamix.com",
+      from: "contact@kunamix.com", // Make sure this is a verified domain in Resend
       to: ["contact@kunamix.com"],
-      subject,
+      subject: internalSubject,
       html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Message Notification</title>
+  <title>New Lead Notification</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f6f6f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f4f4f5;
       padding: 30px;
+      margin: 0;
     }
     .email-container {
       max-width: 600px;
       margin: auto;
       background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 40px;
+      border-radius: 12px;
+      border-top: 6px solid #D95A15; /* Kunamix Orange */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     .header {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #333;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 25px;
+      color: #09090b;
+      letter-spacing: -0.5px;
+    }
+    .grid {
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      border: 1px solid #eaeaea;
     }
     .section {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+    }
+    .section:last-child {
+      margin-bottom: 0;
     }
     .label {
-      font-weight: bold;
-      color: #555;
+      font-size: 12px;
+      font-weight: 600;
+      color: #71717a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
     }
     .value {
-      margin-top: 5px;
-      color: #222;
+      font-size: 16px;
+      color: #18181b;
+      font-weight: 500;
+    }
+    .message-box {
+      background: #fff;
+      border-left: 4px solid #D95A15;
+      padding: 16px 20px;
+      color: #3f3f46;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     .button {
       display: inline-block;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
+      padding: 12px 24px;
+      background: #18181b; /* Dark Button */
+      color: #ffffff;
       text-decoration: none;
       border-radius: 6px;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 14px;
     }
     .button:hover {
-      background: #0056b3;
+      background: #27272a;
     }
   </style>
 </head>
 <body>
   <div class="email-container">
-    <div class="header">📩 Message from ${name}</div>
-    <div class="section">
-      <div class="label">Sender Email:</div>
-      <div class="value">${email}</div>
+    <div class="header">New Project Inquiry</div>
+    
+    <div class="grid">
+      <div class="section">
+        <div class="label">Client Name</div>
+        <div class="value">${name}</div>
+      </div>
+      <div class="section">
+        <div class="label">Email Address</div>
+        <div class="value"><a href="mailto:${email}" style="color: #D95A15; text-decoration: none;">${email}</a></div>
+      </div>
+      <div class="section">
+        <div class="label">Project Type</div>
+        <div class="value">${projectType}</div>
+      </div>
+      <div class="section">
+        <div class="label">Estimated Budget</div>
+        <div class="value">${budget}</div>
+      </div>
     </div>
-    ${company ? `
-    <div class="section">
-      <div class="label">Company:</div>
-      <div class="value">${company}</div>
+
+    <div class="label">Message</div>
+    <div class="message-box">
+      ${message.replace(/\n/g, "<br>")}
     </div>
-    ` : ''}
-    <div class="section">
-      <div class="label">Message:</div>
-      <div class="value">${message}</div>
-    </div>
-    <div class="section">
-      <a href="mailto:${email}?subject=Reply%20to%20your%20message&body=Hi%20${encodeURIComponent(
-        name
-      )}%2C%0A%0AThanks%20for%20reaching%20out..." class="button">Reply to ${name}</a>
+
+    <div>
+      <a href="mailto:${email}?subject=Re:%20Your%20inquiry%20to%20Kunamix%20Digital%20Solutions&body=Hi%20${encodeURIComponent(name.split(" ")[0])},%0A%0AThanks%20for%20reaching%20out%20about%20your%20${encodeURIComponent(projectType)}%20project..." class="button">
+        Reply to ${name.split(" ")[0]}
+      </a>
     </div>
   </div>
 </body>
@@ -98,46 +148,73 @@ export const contactForm = async (req: Request, res: Response, next: NextFunctio
     });
 
     if (error) {
-      return next(new ErrorHandler("Failed to send email to Kunamix Digital Solutions", 500));
+      console.error("Resend Error:", error);
+      return next(
+        new ErrorHandler(
+          "Failed to send email to Kunamix Digital Solutions",
+          500,
+        ),
+      );
     }
 
-    // Send thank-you email to user
+    // Send thank-you auto-reply email to the user
     await resend.emails.send({
-      from: "no-reply@kunamix.com",
+      from: "Kunamix <no-reply@kunamix.com>", // Make sure to use an actual verified sender address
       to: [email],
-      subject: `Thanks for contacting Kunamix Digital Solutions!`,
+      subject: `We've received your inquiry, ${name.split(" ")[0]}!`,
       html: `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Thank You for Contacting Kunamix Digital Solutions</title>
+  <title>Thank You for Contacting Kunamix</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 20px;">
-  <table style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f9f9fb; padding: 20px; margin: 0;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td>
-        <h2 style="color: #1a1a1a;">Hi ${name},</h2>
-        <p style="font-size: 16px; color: #333;">
-          Thank you for reaching out to <strong>Kunamix Digital Solutions</strong>. We've received your message and will get back to you shortly.
-        </p>
-        <h4 style="margin-top: 30px; color: #555;">Your Message:</h4>
-        <blockquote style="font-size: 15px; color: #444; margin: 10px 0; padding: 10px 15px; background-color: #f2f2f2; border-left: 4px solid #007bff;">
-          ${message}
-        </blockquote>
-        <p style="font-size: 16px; color: #333;">If your message is urgent, you can reach us directly at 
-          <a href="mailto:contact@kunamix.com" style="color: #007bff;">contact@kunamix.com</a>.
-        </p>
-        <p style="margin-top: 30px; font-size: 16px; color: #333;">
-          Best regards,<br>
-          Kunamix Digital Solutions Team
-        </p>
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-        <p style="font-size: 14px; color: #777;">
-          📞 +91-7050553648<br>
-          🌐 <a href="https://kunamix.com" style="color: #007bff;">kunamix.com</a><br>
-          📧 <a href="mailto:contact@kunamix.com" style="color: #007bff;">contact@kunamix.com</a>
-        </p>
+      <td align="center">
+        <table style="max-width: 600px; width: 100%; text-align: left; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-top: 4px solid #D95A15;">
+          <tr>
+            <td>
+              <h2 style="color: #09090b; margin-top: 0; font-size: 22px;">Hi ${name.split(" ")[0]},</h2>
+              
+              <p style="font-size: 16px; color: #3f3f46; line-height: 1.6;">
+                Thank you for reaching out to <strong>Kunamix Digital Solutions</strong>. We have successfully received your inquiry regarding your <strong>${projectType.toLowerCase()}</strong> project.
+              </p>
+
+              <p style="font-size: 16px; color: #3f3f46; line-height: 1.6;">
+                Our technical team is currently reviewing your requirements. We aim to get back to you within 24 hours to discuss the next steps, provide an honest timeline, and review your expectations.
+              </p>
+
+              <div style="background-color: #fafafa; padding: 20px; border-radius: 8px; margin: 30px 0; border: 1px solid #f4f4f5;">
+                <h4 style="margin: 0 0 15px 0; color: #18181b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Your Inquiry Summary</h4>
+                <p style="margin: 0 0 8px 0; font-size: 15px; color: #52525b;"><strong>Project Type:</strong> ${projectType}</p>
+                <p style="margin: 0 0 15px 0; font-size: 15px; color: #52525b;"><strong>Budget:</strong> ${budget}</p>
+                
+                <p style="margin: 0 0 8px 0; font-size: 15px; color: #52525b;"><strong>Message:</strong></p>
+                <div style="font-size: 15px; color: #71717a; font-style: italic;">
+                  "${message.replace(/\n/g, "<br>")}"
+                </div>
+              </div>
+
+              <p style="font-size: 16px; color: #3f3f46; line-height: 1.6;">
+                If you have any immediate questions or need to add more details, simply reply directly to this email.
+              </p>
+
+              <p style="margin-top: 40px; font-size: 16px; color: #09090b; font-weight: 500;">
+                Best regards,<br>
+                <span style="color: #D95A15;">The Kunamix Team</span>
+              </p>
+
+              <hr style="margin: 40px 0 20px 0; border: none; border-top: 1px solid #eaeaea;">
+              
+              <p style="font-size: 13px; color: #a1a1aa; line-height: 1.5; margin: 0;">
+                🌐 <a href="https://kunamix.com" style="color: #D95A15; text-decoration: none;">kunamix.com</a><br>
+                This is an automated confirmation, but you can reply directly to reach our team.
+              </p>
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
@@ -151,11 +228,18 @@ export const contactForm = async (req: Request, res: Response, next: NextFunctio
       message: "Mail sent successfully",
     });
   } catch (err) {
-    return next(new ErrorHandler("Something went wrong while sending emails", 500));
+    console.error("Server Error in contactForm:", err);
+    return next(
+      new ErrorHandler("Something went wrong while sending emails", 500),
+    );
   }
 };
 
-export const referForm = async (req: Request, res: Response, next: NextFunction) => {
+export const referForm = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const {
     yourName,
     yourEmail,
@@ -307,12 +391,16 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
         <span class="label">Phone:</span>
         <span class="value">${clientPhone}</span>
       </div>
-      ${clientCompany ? `
+      ${
+        clientCompany
+          ? `
       <div class="field">
         <span class="label">Company:</span>
         <span class="value">${clientCompany}</span>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
     </div>
 
     <!-- Project Details -->
@@ -379,7 +467,7 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
         
         <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="color: #007bff; margin-top: 0;">Referral Summary</h3>
-          <p style="margin: 5px 0;"><strong>Client:</strong> ${clientName}${clientCompany ? ` (${clientCompany})` : ''}</p>
+          <p style="margin: 5px 0;"><strong>Client:</strong> ${clientName}${clientCompany ? ` (${clientCompany})` : ""}</p>
           <p style="margin: 5px 0;"><strong>Budget Range:</strong> ${commissionInfo.range}</p>
           <p style="margin: 5px 0;"><strong>Your Commission:</strong> <span style="color: #28a745; font-weight: bold;">${commissionInfo.rate}</span></p>
         </div>
@@ -485,8 +573,8 @@ export const referForm = async (req: Request, res: Response, next: NextFunction)
     });
   } catch (err) {
     console.error("Referral form error:", err);
-    return next(new ErrorHandler("Something went wrong while processing referral", 500));
+    return next(
+      new ErrorHandler("Something went wrong while processing referral", 500),
+    );
   }
 };
-
-
