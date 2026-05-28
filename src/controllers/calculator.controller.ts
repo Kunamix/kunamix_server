@@ -1,7 +1,7 @@
 import { asyncHandler } from "@/utils/async-handler.util";
 import { Request, Response } from "express";
 import PDFDocument from "pdfkit";
-import * as admin from "firebase-admin";
+import admin from "firebase-admin";
 import { ApiError } from "@/utils/api-error.util";
 import { ApiResponse } from "@/utils/api-response.util";
 import dotenv from "dotenv";
